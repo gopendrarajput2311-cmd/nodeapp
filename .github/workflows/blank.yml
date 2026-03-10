@@ -10,7 +10,7 @@ on:
 env:
   AWS_REGION: us-east-2
   ECR_REPOSITORY: node-app-cb
-  ECR_REGISTRY: 887395463993.dkr.ecr.us-east-2.amazonaws.com/node-app-cb
+  ECR_REGISTRY: 887395463993.dkr.ecr.us-east-2.amazonaws.com
 
 jobs:
   build-and-deploy:
