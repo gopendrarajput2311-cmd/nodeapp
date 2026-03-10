@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "61"
+  generation: 63
+  labels:
+    app: node-app-cb
+  name: node-app-cb
+  namespace: default
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: node-app-cb
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/restartedAt: "2026-03-05T17:16:39+05:30"
+      labels:
+        app: node-app-cb
+    spec:
+      automountServiceAccountToken: true
+      containers:
+        - envFrom:
+            - configMapRef:
+                name: node-app-config
+                optional: false
+          image: 098499087395.dkr.ecr.us-east-2.amazonaws.com/node-app-cb:v113 
+          imagePullPolicy: IfNotPresent
+          name: node-app
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /usr/carbyne/app/public/logs
+              mountPropagation: None
+              name: log-volume
+        - image: amazon/aws-for-fluent-bit:2.31.8
+          imagePullPolicy: IfNotPresent
+          name: fluent-bit
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /var/log
+              mountPropagation: None
+              name: log-volume
+            - mountPath: /fluent-bit/etc/
+              mountPropagation: None
+              name: fluentbit-config
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: fluentbit
+      serviceAccountName: fluentbit
+      shareProcessNamespace: false
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - emptyDir: {}
+          name: log-volume
+        - configMap:
+            defaultMode: 420
+            name: fluent-bit-config
+            optional: false
+          name: fluentbit-config
