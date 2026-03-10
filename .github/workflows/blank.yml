@@ -1,56 +1,56 @@
 name: Build Push and Update GitOps
 
 on:
-push:
-paths:
-- Dockerfile
-branches:
-- master
+  push:
+    paths:
+      - Dockerfile
+    branches:
+      - master
 
 env:
-AWS_REGION: us-east-2
-ECR_REPOSITORY: node-app-cb
-ECR_REGISTRY: 887395463993.dkr.ecr.us-east-2.amazonaws.com/node-app-cb
+  AWS_REGION: us-east-2
+  ECR_REPOSITORY: node-app-cb
+  ECR_REGISTRY: 887395463993.dkr.ecr.us-east-2.amazonaws.com/node-app-cb
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v3
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-    - name: Login to Amazon ECR
-      uses: aws-actions/amazon-ecr-login@v2
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
 
-    - name: Build Docker Image
-      run: |
-        docker build -t $ECR_REPOSITORY:${{ github.sha }} .
+      - name: Build Docker Image
+        run: |
+          docker build -t $ECR_REPOSITORY:${{ github.sha }} .
 
-    - name: Tag Docker Image
-      run: |
-        docker tag $ECR_REPOSITORY:${{ github.sha }} \
-        $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
+      - name: Tag Docker Image
+        run: |
+          docker tag $ECR_REPOSITORY:${{ github.sha }} \
+          $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
 
-    - name: Push Docker Image
-      run: |
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
+      - name: Push Docker Image
+        run: |
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
 
-    - name: Update Kubernetes Deployment
-      run: |
-        sed -i "s|image: .*node-app-cb:.*|image: $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}|g" node-deployment-v1.yaml
+      - name: Update Kubernetes Deployment
+        run: |
+          sed -i "s|image: .*node-app-cb:.*|image: $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}|g" node-deployment-v1.yaml
 
-    - name: Commit Updated Deployment
-      run: |
-        git config user.name "github-actions"
-        git config user.email "actions@github.com"
-        git add node-deployment-v1.yaml
-        git commit -m "Update image to ${{ github.sha }}"
-        git push
+      - name: Commit Updated Deployment
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add node-deployment-v1.yaml
+          git commit -m "Update image to ${{ github.sha }}"
+          git push
