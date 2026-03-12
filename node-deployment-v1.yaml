@@ -1,12 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: node-app-cb
   annotations:
     deployment.kubernetes.io/revision: "61"
+    argocd-image-updater.argoproj.io/image-list: node-app-cb=887395463993.dkr.ecr.us-east-2.amazonaws.com/node-app-cb
   generation: 63
   labels:
     app: node-app-cb
-  name: node-app-cb
   namespace: default
 spec:
   progressDeadlineSeconds: 600
@@ -33,7 +34,7 @@ spec:
             - configMapRef:
                 name: node-app-config
                 optional: false
-          image: 098499087395.dkr.ecr.us-east-2.amazonaws.com/node-app-cb:v113 
+          image: 887395463993.dkr.ecr.us-east-2.amazonaws.com/node-app-cb:v113
           imagePullPolicy: IfNotPresent
           name: node-app
           ports:
