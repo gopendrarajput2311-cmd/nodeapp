@@ -35,7 +35,7 @@ spec:
             - configMapRef:
                 name: node-app-config
                 optional: false
-          image: 887395463993.dkr.ecr.us-east-2.amazonaws.com/node-app-cb:43d6eeb5106ab8ff042102b56402bf36d1b138af
+          image: 887395463993.dkr.ecr.us-east-2.amazonaws.com/node-app-cb:5955967cc4bd9007fed2674e460ded3cffb3e8d6
           imagePullPolicy: IfNotPresent
           name: node-app
           ports:
