@@ -5,6 +5,7 @@ metadata:
   annotations:
     deployment.kubernetes.io/revision: "61"
     argocd-image-updater.argoproj.io/image-list: node-app-cb=887395463993.dkr.ecr.us-east-2.amazonaws.com/node-app-cb
+    argocd-image-updater.argoproj.io/node-app-cb.update-strategy: newest-build
   generation: 63
   labels:
     app: node-app-cb
@@ -34,7 +35,7 @@ spec:
             - configMapRef:
                 name: node-app-config
                 optional: false
-          image: 887395463993.dkr.ecr.us-east-2.amazonaws.com/node-app-cb:v113
+          image: 887395463993.dkr.ecr.us-east-2.amazonaws.com/node-app-cb:43d6eeb5106ab8ff042102b56402bf36d1b138af
           imagePullPolicy: IfNotPresent
           name: node-app
           ports:
