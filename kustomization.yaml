@@ -5,6 +5,6 @@ resources:
   - fb-cm-v1.yaml
   - fb-sa-v1.yaml
   - node-app-hpa.yaml
-  - node-cm-v1.yaml
   - node-deployment-v1.yaml
   - node-svc-v1.yaml
+
