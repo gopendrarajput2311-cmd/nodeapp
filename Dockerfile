@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY app.js .
 
-EXPOSE 3000
+EXPOSE 3003
 
 CMD ["node", "app.js"]
