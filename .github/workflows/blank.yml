@@ -43,4 +43,14 @@ jobs:
         run: |
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
 
-      
+      - name: Update Kubernetes Deployment
+        run: |
+          sed -i "s|image: .*node-app-cb:.*|image: $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}|g" node-deployment-v1.yaml
+
+      - name: Commit Updated Deployment
+        run: |
+          git config user.name "gopendrarajput2311-cmd"
+          git config user.email "gopendrarajput2311@gmail.com"
+          git add node-deployment-v1.yaml
+          git commit -m "Update image to ${{ github.sha }}"
+          git push
