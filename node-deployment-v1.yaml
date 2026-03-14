@@ -51,13 +51,6 @@ spec:
         - image: amazon/aws-for-fluent-bit:2.31.8
           imagePullPolicy: IfNotPresent
           name: fluent-bit
-          resources:
-            requests:
-              cpu: "100m"
-              memory: "128Mi"
-            limits:
-              cpu: "200m"
-              memory: "256Mi"
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
